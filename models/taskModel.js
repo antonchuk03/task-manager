@@ -13,11 +13,8 @@ const taskSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
-    role: {
-        type: String,
-        default: 'user', //admin
-    },
 });
 
 const User = mongoose.model('Task', taskSchema);
+
 export default User;

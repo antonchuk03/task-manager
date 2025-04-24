@@ -14,7 +14,7 @@ export const createTask = async (req, res) => {
 
         return res.status(201).json(task);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        res.status(400).json({ message: 'Failed to create the task' });
     }
 };
 
@@ -31,6 +31,7 @@ export const updateTask = async (req, res) => {
                 runValidators: true,
             }
         );
+
         if (!task) {
             return res.status(404).json({ message: 'Task not found' });
         }
@@ -50,6 +51,7 @@ export const deleteTask = async (req, res) => {
             _id: taskId,
             createBy: userId,
         });
+
         if (!task) {
             return res.status(404).json({ message: 'Task not found' });
         }
@@ -70,7 +72,7 @@ export const getTasksByUserId = async (req, res) => {
 
         return res.status(200).json(tasks);
     } catch (err) {
-        res.status(400).json({ message: 'Failed to get the task by id' });
+        res.status(400).json({ message: 'Failed to find all tasks' });
     }
 };
 
@@ -80,7 +82,7 @@ export const getAllTasks = async (req, res) => {
 
         return res.status(200).json(tasks);
     } catch (err) {
-        res.status(400).json({ message: 'Failed to get all tasks' });
+        res.status(400).json({ message: 'Failed to find all tasks' });
     }
 };
 
@@ -93,6 +95,7 @@ export const getTask = async (req, res) => {
             _id: taskId,
             createBy: userId,
         });
+
         if (!task) {
             return res.status(404).json({ message: 'Task not found' });
         }

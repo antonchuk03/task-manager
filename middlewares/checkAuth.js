@@ -1,37 +1,18 @@
-import User from '../models/userModel.js';
-import bcrypt from 'bcrypt';
-
 export default async (req, res, next) => {
-    //check for basic auth header
-    if (
-        !req.headers.authorization ||
-        req.headers.authorization?.indexOf('Basic') === -1
-    ) {
-        return res
-            .status(401)
-            .json({ message: 'Unauthorized(invalid authorization header)' });
+    try {
+        if (!req.user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        if (req.user.role !== 'admin') {
+            return res.status(500).json({
+                message: `Access denied`,
+            });
+        }
+
+        next();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
     }
-
-    //verify basic auth
-    const base64Credentials = req.headers.authorization.split(' ')[1];
-    const credentials = Buffer.from(base64Credentials, 'base64').toString(
-        'ascii'
-    );
-
-    const [email, password] = credentials.split(':');
-
-    const user = await User.findOne({ email });
-    if (!user) {
-        res.status(404).json({ message: 'User not found' });
-    }
-
-    const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) {
-        res.status(401).json({ message: 'Invalid password or email' });
-    }
-
-    //atach user to request object
-    req.user = user._doc;
-
-    next();
 };
